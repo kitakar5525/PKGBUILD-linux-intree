@@ -97,7 +97,7 @@ prepare() {
   echo "Setting config..."
   _set_config
   cp .config config_${pkgbase}
-  diff -u ../config_archlinux .config || :
+  diff -u config_archlinux .config || :
 
   make "${_makeopts[@]}" -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
