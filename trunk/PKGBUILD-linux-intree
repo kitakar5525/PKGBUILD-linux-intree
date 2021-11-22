@@ -43,7 +43,16 @@ BUILD_DOCS_PACKAGE=false
 # Skips _set_config(), prepare() and build() if set to true.
 PACKAGING_ONLY=false
 
-_makeopts=()
+# Edit here when you need to use older gcc. Reference: linux-lts44
+# CFLAGS CXXFLAGS are not used at all.
+# LDFLAGS only works on the make command line. It is not used from the environment.
+_makeopts=(
+  # CC='gcc-4.8' CXX='g++-4.8' HOSTCC='gcc-4.8' HOSTCXX='g++-4.8'
+  # CC='gcc-5' CXX='g++-5' HOSTCC='gcc-5' HOSTCXX='g++-5' # LD='ld.gold'
+  # CC='gcc-6' CXX='g++-6' HOSTCC='gcc-6' HOSTCXX='g++-6'
+  # LDFLAGS='-z max-page-size=0x200000' # http://lists.gnu.org/archive/html/bug-binutils/2018-03/msg00193.html
+)
+# makedepends+=('gcc48')
 
 # my config changes. you can add your changes here if you want.
 cat << EOS > config_mychanges-fragment
