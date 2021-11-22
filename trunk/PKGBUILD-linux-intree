@@ -9,7 +9,7 @@
 # kernel version update since the config is released as
 # surface-x.yz.config.
 
-pkgbase=linux
+pkgbase=linux-surface-mainline
 pkgver="$(make kernelversion | sed s/'-'/'.'/g)"
 pkgrel=1
 pkgdesc='Linux'
