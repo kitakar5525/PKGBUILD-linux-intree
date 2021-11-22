@@ -23,12 +23,17 @@ makedepends=(
 options=('!strip')
 _srcname="$PWD" # for bulding in-tree
 source=(
+  # Arch Linux config
   config_archlinux::"https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/linux/trunk/config"
+
+  # The following are configs from outside Arch Linux. You can remove
+  # these if you don't need.
   config_surface-fragment::https://raw.githubusercontent.com/linux-surface/linux-surface/master/configs/surface-5.15.config
   config_ls_archlinux-fragment::https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/arch/kernel/arch.config
 )
 md5sums=(
   'SKIP'
+
   'SKIP'
   'SKIP'
 )
