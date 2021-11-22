@@ -40,6 +40,8 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 ### settings ###
 BUILD_HEADER_PACKAGE=true
 BUILD_DOCS_PACKAGE=false
+# Skips _set_config(), prepare() and build() if set to true.
+PACKAGING_ONLY=false
 
 # my config changes. you can add your changes here if you want.
 cat << EOS > config_mychanges-fragment
@@ -48,6 +50,10 @@ EOS
 #########################
 
 _set_config() {
+  if $PACKAGING_ONLY; then
+    return
+  fi
+
   ./scripts/kconfig/merge_config.sh -m \
                             ./config_archlinux \
                             ./config_surface-fragment \
@@ -64,6 +70,10 @@ _set_config() {
 }
 
 prepare() {
+  if $PACKAGING_ONLY; then
+    return
+  fi
+
   cd $_srcname
 
   echo "Setting version..."
@@ -80,6 +90,10 @@ prepare() {
 }
 
 build() {
+  if $PACKAGING_ONLY; then
+    return
+  fi
+
   cd $_srcname
   make all
   if $BUILD_DOCS_PACKAGE; then
