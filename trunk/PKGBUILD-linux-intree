@@ -1,4 +1,9 @@
-# Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Modified PKGBUILD for building linux kernel in-tree.
+# Copy this file into the root of kernel tree then run makepkg like the
+# following:
+#     PKGDEST=./ makepkg -sCp PKGBUILD-linux-intree
+#
+# Reference: https://bbs.archlinux.org/viewtopic.php?id=213287
 
 pkgbase=linux
 pkgver=5.16.4.arch1
