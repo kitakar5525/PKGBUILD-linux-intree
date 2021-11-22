@@ -88,6 +88,7 @@ prepare() {
   cd $_srcname
 
   echo "Setting version..."
+  if [ -e .scmversion ]; then rm .scmversion; fi
   scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
   echo "${pkgbase#linux}" > localversion.20-pkgname
