@@ -25,6 +25,11 @@ export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
+### settings ###
+BUILD_HEADER_PACKAGE=true
+BUILD_DOCS_PACKAGE=false
+#########################
+
 prepare() {
   cd $_srcname
 
@@ -45,7 +50,9 @@ prepare() {
 build() {
   cd $_srcname
   make all
-  make htmldocs
+  if $BUILD_DOCS_PACKAGE; then
+    make htmldocs
+  fi
 }
 
 _package() {
@@ -176,7 +183,9 @@ _package-docs() {
   ln -sr "$builddir/Documentation" "$pkgdir/usr/share/doc/$pkgbase"
 }
 
-pkgname=("$pkgbase" "$pkgbase-headers" "$pkgbase-docs")
+pkgname=("$pkgbase")
+if $BUILD_HEADER_PACKAGE; then pkgname+=("$pkgbase-headers"); fi
+if $BUILD_DOCS_PACKAGE; then pkgname+=("$pkgbase-docs"); fi
 for _p in "${pkgname[@]}"; do
   eval "package_$_p() {
     $(declare -f "_package${_p#$pkgbase}")
