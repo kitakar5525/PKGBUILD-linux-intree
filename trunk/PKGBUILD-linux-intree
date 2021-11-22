@@ -6,7 +6,7 @@
 # Reference: https://bbs.archlinux.org/viewtopic.php?id=213287
 
 pkgbase=linux
-pkgver=5.16.4.arch1
+pkgver="$(make kernelversion | sed s/'-'/'.'/g)"
 pkgrel=1
 pkgdesc='Linux'
 arch=(x86_64)
