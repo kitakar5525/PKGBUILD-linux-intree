@@ -9,8 +9,6 @@ pkgbase=linux
 pkgver=5.16.4.arch1
 pkgrel=1
 pkgdesc='Linux'
-_srctag=v${pkgver%.*}-${pkgver##*.}
-url="https://github.com/archlinux/linux/commits/$_srctag"
 arch=(x86_64)
 license=(GPL2)
 makedepends=(
@@ -19,19 +17,9 @@ makedepends=(
   git
 )
 options=('!strip')
-_srcname=archlinux-linux
-source=(
-  "$_srcname::git+https://github.com/archlinux/linux?signed#tag=$_srctag"
-  config         # the main kernel config file
-)
-validpgpkeys=(
-  'ABAF11C65A2970B130ABE3C479BE3E4300411886'  # Linus Torvalds
-  '647F28654894E3BD457199BE38DBBDC86092693E'  # Greg Kroah-Hartman
-  'A2FF3A36AAA56654109064AB19802F8B0D70FC30'  # Jan Alexander Steffens (heftig)
-  'C7E7849466FE2358343588377258734B41C31549'  # David Runge <dvzrv@archlinux.org>
-)
-sha256sums=('SKIP'
-            '7cbba374356a189faac71001c5344ce8f02434684b1ce1accefc0cc4bd6718e5')
+_srcname="$PWD" # for bulding in-tree
+source=()
+md5sums=()
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -44,15 +32,6 @@ prepare() {
   scripts/setlocalversion --save-scmversion
   echo "-$pkgrel" > localversion.10-pkgrel
   echo "${pkgbase#linux}" > localversion.20-pkgname
-
-  local src
-  for src in "${source[@]}"; do
-    src="${src%%::*}"
-    src="${src##*/}"
-    [[ $src = *.patch ]] || continue
-    echo "Applying patch $src..."
-    patch -Np1 < "../$src"
-  done
 
   echo "Setting config..."
   cp ../config .config
