@@ -4,6 +4,10 @@
 #     PKGDEST=./ makepkg -sCp PKGBUILD-linux-intree
 #
 # Reference: https://bbs.archlinux.org/viewtopic.php?id=213287
+#
+# Make sure to update the link to config_surface-fragment on a major
+# kernel version update since the config is released as
+# surface-x.yz.config.
 
 pkgbase=linux
 pkgver="$(make kernelversion | sed s/'-'/'.'/g)"
@@ -18,8 +22,16 @@ makedepends=(
 )
 options=('!strip')
 _srcname="$PWD" # for bulding in-tree
-source=()
-md5sums=()
+source=(
+  config_archlinux::"https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/linux/trunk/config"
+  config_surface-fragment::https://raw.githubusercontent.com/linux-surface/linux-surface/master/configs/surface-5.15.config
+  config_ls_archlinux-fragment::https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/arch/kernel/arch.config
+)
+md5sums=(
+  'SKIP'
+  'SKIP'
+  'SKIP'
+)
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -28,7 +40,28 @@ export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EP
 ### settings ###
 BUILD_HEADER_PACKAGE=true
 BUILD_DOCS_PACKAGE=false
+
+# my config changes. you can add your changes here if you want.
+cat << EOS > config_mychanges-fragment
+
+EOS
 #########################
+
+_set_config() {
+  ./scripts/kconfig/merge_config.sh -m \
+                            ./config_archlinux \
+                            ./config_surface-fragment \
+                            ./config_ls_archlinux-fragment \
+                            ./config_mychanges-fragment
+  make olddefconfig
+  make prepare
+
+  # cleanup
+  rm config_archlinux
+  rm config_surface-fragment
+  rm config_ls_archlinux-fragment
+  rm config_mychanges-fragment
+}
 
 prepare() {
   cd $_srcname
@@ -39,9 +72,8 @@ prepare() {
   echo "${pkgbase#linux}" > localversion.20-pkgname
 
   echo "Setting config..."
-  cp ../config .config
-  make olddefconfig
-  diff -u ../config .config || :
+  _set_config
+  diff -u ../config_archlinux .config || :
 
   make -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
