@@ -43,6 +43,8 @@ BUILD_DOCS_PACKAGE=false
 # Skips _set_config(), prepare() and build() if set to true.
 PACKAGING_ONLY=false
 
+_makeopts=()
+
 # my config changes. you can add your changes here if you want.
 cat << EOS > config_mychanges-fragment
 
@@ -59,8 +61,8 @@ _set_config() {
                             ./config_surface-fragment \
                             ./config_ls_archlinux-fragment \
                             ./config_mychanges-fragment
-  make olddefconfig
-  make prepare
+  make "${_makeopts[@]}" olddefconfig
+  make "${_makeopts[@]}" prepare
 
   # cleanup
   rm config_archlinux
@@ -85,7 +87,7 @@ prepare() {
   _set_config
   diff -u ../config_archlinux .config || :
 
-  make -s kernelrelease > version
+  make "${_makeopts[@]}" -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
 }
 
@@ -95,9 +97,9 @@ build() {
   fi
 
   cd $_srcname
-  make all
+  make "${_makeopts[@]}" all
   if $BUILD_DOCS_PACKAGE; then
-    make htmldocs
+    make "${_makeopts[@]}" htmldocs
   fi
 }
 
@@ -116,13 +118,13 @@ _package() {
   echo "Installing boot image..."
   # systemd expects to find the kernel here to allow hibernation
   # https://github.com/systemd/systemd/commit/edda44605f06a41fb86b7ab8128dcf99161d2344
-  install -Dm644 "$(make -s image_name)" "$modulesdir/vmlinuz"
+  install -Dm644 "$(make "${_makeopts[@]}" -s image_name)" "$modulesdir/vmlinuz"
 
   # Used by mkinitcpio to name the kernel
   echo "$pkgbase" | install -Dm644 /dev/stdin "$modulesdir/pkgbase"
 
   echo "Installing modules..."
-  make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
+  make "${_makeopts[@]}" INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
 
   # remove build and source links
   rm "$modulesdir"/{source,build}
