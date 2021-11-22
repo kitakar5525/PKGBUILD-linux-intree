@@ -1,0 +1,8 @@
+# You can add kernel config here to override Arch Linux's default config
+
+#
+# example
+#
+# Rename to invalid name like C#ONFIG when you need to comment out
+# configs. Remove the # when you want to uncomment.
+C#ONFIG_EXAMPLE_YOUR_CONFIG_OVERRIDE=m

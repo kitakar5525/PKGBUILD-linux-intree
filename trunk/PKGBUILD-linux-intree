@@ -1,13 +1,15 @@
 # Modified PKGBUILD for building linux kernel in-tree.
-# Copy this file into the root of kernel tree then run makepkg like the
+# Copy files into the root of kernel tree then run makepkg like the
 # following:
 #     PKGDEST=./ makepkg -sCp PKGBUILD-linux-intree
 #
 # Reference: https://bbs.archlinux.org/viewtopic.php?id=213287
 #
-# Make sure to update the link to config_surface-fragment on a major
-# kernel version update since the config is released as
-# surface-x.yz.config.
+# - Make sure to update the link to config_surface-fragment on a major
+#   kernel version update since the config is released as
+#   surface-x.yz.config.
+# - You can add your kernel config in config_mychanges-fragment to
+#   override Arch Linux's default config.
 
 pkgbase=linux-surface-mainline
 pkgver="$(make kernelversion | sed s/'-'/'.'/g)"
@@ -59,10 +61,6 @@ _makeopts=(
 )
 # makedepends+=('gcc48')
 
-# my config changes. you can add your changes here if you want.
-cat << EOS > config_mychanges-fragment
-
-EOS
 #########################
 
 _set_config() {
@@ -82,7 +80,6 @@ _set_config() {
   rm config_archlinux
   rm config_surface-fragment
   rm config_ls_archlinux-fragment
-  rm config_mychanges-fragment
 }
 
 prepare() {
