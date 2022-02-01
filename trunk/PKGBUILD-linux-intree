@@ -30,7 +30,7 @@ source=(
 
   # The following are configs from outside Arch Linux. You can remove
   # these if you don't need.
-  config_surface-fragment::https://raw.githubusercontent.com/linux-surface/linux-surface/master/configs/surface-5.15.config
+  config_surface-fragment::https://raw.githubusercontent.com/linux-surface/linux-surface/master/configs/surface-5.16.config
   config_ls_archlinux-fragment::https://raw.githubusercontent.com/linux-surface/linux-surface/master/pkg/arch/kernel/arch.config
 )
 md5sums=(
